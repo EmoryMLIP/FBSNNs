@@ -1,0 +1,32 @@
+TensorFlow 2.0 Upgrade Script
+-----------------------------
+Converted 1 files
+Detected 0 issues that require attention
+--------------------------------------------------------------------------------
+================================================================================
+Detailed log follows:
+
+================================================================================
+--------------------------------------------------------------------------------
+Processing file 'FBSNNs.py'
+ outputting to 'FBSNNs_v2.py'
+--------------------------------------------------------------------------------
+
+29:20: INFO: Renamed 'tf.Session' to 'tf.compat.v1.Session'
+29:38: INFO: Renamed 'tf.ConfigProto' to 'tf.compat.v1.ConfigProto'
+33:29: INFO: Renamed 'tf.placeholder' to 'tf.compat.v1.placeholder'
+34:20: INFO: Renamed 'tf.placeholder' to 'tf.compat.v1.placeholder'
+35:20: INFO: Renamed 'tf.placeholder' to 'tf.compat.v1.placeholder'
+36:21: INFO: Renamed 'tf.placeholder' to 'tf.compat.v1.placeholder'
+41:25: INFO: Renamed 'tf.train.AdamOptimizer' to 'tf.compat.v1.train.AdamOptimizer'
+45:15: INFO: Renamed 'tf.global_variables_initializer' to 'tf.compat.v1.global_variables_initializer'
+63:27: INFO: Renamed 'tf.truncated_normal' to 'tf.random.truncated_normal'
+82:13: INFO: Added keywords to args of function 'tf.gradients'
+87:15: INFO: Added keywords to args of function 'tf.gradients'
+106:63: INFO: Added keywords to args of function 'tf.reduce_sum'
+109:20: INFO: Added keywords to args of function 'tf.reduce_sum'
+120:16: INFO: Added keywords to args of function 'tf.reduce_sum'
+121:16: INFO: Added keywords to args of function 'tf.reduce_sum'
+198:15: INFO: Renamed 'tf.matrix_diag' to 'tf.linalg.diag'
+--------------------------------------------------------------------------------
+
