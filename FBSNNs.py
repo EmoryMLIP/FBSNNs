@@ -26,23 +26,23 @@ class FBSNN(ABC): # Forward-Backward Stochastic Neural Network
         self.weights, self.biases = self.initialize_NN(layers)
         
         # tf session
-        self.sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True,
+        self.sess = tf.compat.v1.Session(config=tf.compat.v1.ConfigProto(allow_soft_placement=True,
                                                      log_device_placement=True))
         
         # tf placeholders and graph (training)
-        self.learning_rate = tf.placeholder(tf.float32, shape=[])
-        self.t_tf = tf.placeholder(tf.float32, shape=[M, self.N+1, 1]) # M x (N+1) x 1
-        self.W_tf = tf.placeholder(tf.float32, shape=[M, self.N+1, self.D]) # M x (N+1) x D
-        self.Xi_tf = tf.placeholder(tf.float32, shape=[1, D]) # 1 x D
+        self.learning_rate = tf.compat.v1.placeholder(tf.float32, shape=[])
+        self.t_tf = tf.compat.v1.placeholder(tf.float32, shape=[M, self.N+1, 1]) # M x (N+1) x 1
+        self.W_tf = tf.compat.v1.placeholder(tf.float32, shape=[M, self.N+1, self.D]) # M x (N+1) x D
+        self.Xi_tf = tf.compat.v1.placeholder(tf.float32, shape=[1, D]) # 1 x D
 
         self.loss, self.X_pred, self.Y_pred, self.Y0_pred = self.loss_function(self.t_tf, self.W_tf, self.Xi_tf)
                 
         # optimizers
-        self.optimizer = tf.train.AdamOptimizer(learning_rate = self.learning_rate)
+        self.optimizer = tf.compat.v1.train.AdamOptimizer(learning_rate = self.learning_rate)
         self.train_op = self.optimizer.minimize(self.loss)
         
         # initialize session and variables
-        init = tf.global_variables_initializer()
+        init = tf.compat.v1.global_variables_initializer()
         self.sess.run(init)
     
     def initialize_NN(self, layers):
@@ -60,7 +60,7 @@ class FBSNN(ABC): # Forward-Backward Stochastic Neural Network
         in_dim = size[0]
         out_dim = size[1]        
         xavier_stddev = np.sqrt(2/(in_dim + out_dim))
-        return tf.Variable(tf.truncated_normal([in_dim, out_dim],
+        return tf.Variable(tf.random.truncated_normal([in_dim, out_dim],
                                                stddev=xavier_stddev), dtype=tf.float32)
     
     def neural_net(self, X, weights, biases):
@@ -79,12 +79,12 @@ class FBSNN(ABC): # Forward-Backward Stochastic Neural Network
     def net_u(self, t, X): # M x 1, M x D
         
         u = self.neural_net(tf.concat([t,X], 1), self.weights, self.biases) # M x 1
-        Du = tf.gradients(u, X)[0] # M x D
+        Du = tf.gradients(ys=u, xs=X)[0] # M x D
         
         return u, Du
 
     def Dg_tf(self, X): # M x D
-        return tf.gradients(self.g_tf(X), X)[0] # M x D
+        return tf.gradients(ys=self.g_tf(X), xs=X)[0] # M x D
         
     def loss_function(self, t, W, Xi): # M x (N+1) x 1, M x (N+1) x D, 1 x D
         loss = 0
@@ -103,10 +103,10 @@ class FBSNN(ABC): # Forward-Backward Stochastic Neural Network
             t1 = t[:,n+1,:]
             W1 = W[:,n+1,:]
             X1 = X0 + self.mu_tf(t0,X0,Y0,Z0)*(t1-t0) + tf.squeeze(tf.matmul(self.sigma_tf(t0,X0,Y0),tf.expand_dims(W1-W0,-1)), axis=[-1])
-            Y1_tilde = Y0 + self.phi_tf(t0,X0,Y0,Z0)*(t1-t0) + tf.reduce_sum(Z0*tf.squeeze(tf.matmul(self.sigma_tf(t0,X0,Y0),tf.expand_dims(W1-W0,-1))), axis=1, keepdims = True)
+            Y1_tilde = Y0 + self.phi_tf(t0,X0,Y0,Z0)*(t1-t0) + tf.reduce_sum(input_tensor=Z0*tf.squeeze(tf.matmul(self.sigma_tf(t0,X0,Y0),tf.expand_dims(W1-W0,-1))), axis=1, keepdims = True)
             Y1, Z1 = self.net_u(t1,X1)
             
-            loss += tf.reduce_sum(tf.square(Y1 - Y1_tilde))
+            loss += tf.reduce_sum(input_tensor=tf.square(Y1 - Y1_tilde))
             
             t0 = t1
             W0 = W1
@@ -117,8 +117,8 @@ class FBSNN(ABC): # Forward-Backward Stochastic Neural Network
             X_list.append(X0)
             Y_list.append(Y0)
             
-        loss += tf.reduce_sum(tf.square(Y1 - self.g_tf(X1)))
-        loss += tf.reduce_sum(tf.square(Z1 - self.Dg_tf(X1)))
+        loss += tf.reduce_sum(input_tensor=tf.square(Y1 - self.g_tf(X1)))
+        loss += tf.reduce_sum(input_tensor=tf.square(Z1 - self.Dg_tf(X1)))
 
         X = tf.stack(X_list,axis=1)
         Y = tf.stack(Y_list,axis=1)
@@ -138,6 +138,7 @@ class FBSNN(ABC): # Forward-Backward Stochastic Neural Network
         dt = T/N
         
         Dt[:,1:,:] = dt
+        np.random.seed(0)
         DW[:,1:,:] = np.sqrt(dt)*np.random.normal(size=(M,N,D))
         
         t = np.cumsum(Dt,axis=1) # M x (N+1) x 1
@@ -195,5 +196,5 @@ class FBSNN(ABC): # Forward-Backward Stochastic Neural Network
     def sigma_tf(self, t, X, Y): # M x 1, M x D, M x 1
         M = self.M
         D = self.D
-        return tf.matrix_diag(tf.ones([M,D])) # M x D x D
+        return tf.linalg.diag(tf.ones([M,D])) # M x D x D
     ###########################################################################
