@@ -1,6 +1,6 @@
-# [Forward-Backward Stochastic Neural Networks](https://maziarraissi.github.io/EmoryMLIP/FBSNNs/)
+# [Forward-Backward Stochastic Neural Networks](https://github.io/EmoryMLIP/FBSNNs/)
 
-This is a fork of the original repository at https://maziarraissi.github.io/FBSNNs/, modified according to approaches considered in the paper:
+This is a fork of the original repository at https://github.io/FBSNNs/, modified according to approaches considered in the paper:
 - [A Neural Network Approach for Stochastic Optimal Control](https://arxiv.org/pdf/2209.13104.pdf)
 ## Citation
    @misc{Li-Verma-Ruthotto-2022,
