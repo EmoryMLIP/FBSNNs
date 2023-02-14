@@ -14,15 +14,11 @@ For more information, please refer to the following: (https://maziarraissi.githu
   
 
 ## Citation
-   @misc{Li-Verma-Ruthotto-2022,
-  doi = {10.48550/ARXIV.2209.13104},  
-  url = {https://arxiv.org/abs/2209.13104},  
-  author = {Li, Xingjian and Verma, Deepanshu and Ruthotto, Lars},  
-  keywords = {Optimization and Control (math.OC), FOS: Mathematics, FOS: Mathematics},  
-  title = {A Neural Network Approach for Stochastic Optimal Control},  
-  publisher = {arXiv},  
-  year = {2022},
-  copyright = {Creative Commons Attribution 4.0 International}
-}
+   @article{raissi2018forward,
+      title={Forward-Backward Stochastic Neural Networks: Deep Learning of High-dimensional Partial Differential Equations},
+      author={Raissi, Maziar},
+      journal={arXiv preprint arXiv:1804.07010},
+      year={2018}
+    }
 
 
