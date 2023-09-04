@@ -3,7 +3,7 @@ import tensorflow as tf
 from Neural_SOC import NeuralSOC
 import matplotlib.pyplot as plt
 tf.compat.v1.disable_eager_execution()
-import csv, time, gc
+import csv, time, gc, os
 import pickle as pl
 
 class HamiltonJacobiBellman(NeuralSOC):
@@ -20,6 +20,8 @@ class HamiltonJacobiBellman(NeuralSOC):
         self.sigma_val = sigma_val
         self.ctrl_dyn = ctrl_dyn
         self.oc_loss = oc_loss
+        if not os.path.exists('./history'):
+            os.makedirs('./history')
         self.file2store = './history/history100D_ctrl-'+str(ctrl_dyn) + '_alpha-' + str(alpha) + '_shift_targ' + str(shift_targ) +'_date-' + time.strftime("%m-%d") + '_time-' + time.strftime("%H-%M") + '.csv'
 
 
@@ -88,6 +90,8 @@ def get_Phi(model, numiter, legnd, samples=5, save_sol = 0):
     if save_sol != 1:
         return t_test, Y_pred, Y_true, Y_test_terminal, errors
     else:
+        if not os.path.exists('./sol_files'):
+            os.makedirs('./sol_files')
         np.savez('./sol_files/sol_relerr-' + legnd + str(numiter) + "-" + cur_date, t = t_test[:samples,:,0], Y_true = Y_true,
                  Y_true_T = Y_test_terminal[:samples,0], Y_pred = Y_pred[:samples,:,0], rel_err = errors,
                  oc_loss = np.array(his[0]))
@@ -97,8 +101,8 @@ def get_Phi(model, numiter, legnd, samples=5, save_sol = 0):
 def plotting(model, numiter, datafile):
     cur_date, cur_time = time.strftime("%m-%d"), time.strftime("%H-%M")
     data = np.load(datafile)
-    t_test, Y_test, Y_test_terminal, Y_pred, errors, legnd = data['t'], data['Y_true'].T,\
-                                                      data['Y_true_T'], data['Y_pred'], data['rel_err'], data['legnd']
+    t_test, Y_test, Y_test_terminal, Y_pred, errors = data['t'], data['Y_true'].T,\
+                                                      data['Y_true_T'], data['Y_pred'], data['rel_err']
     samples = t_test.shape[0]
     for i in range(samples):
         plt.figure()
@@ -113,13 +117,15 @@ def plotting(model, numiter, datafile):
         plt.title('100-dimensional Hamilton-Jacobi-Bellman')
         plt.legend()
         file2savefig = './figures/comparision/HJB_ctrl-'+str(model.ctrl_dyn) + '_alpha-' + str(model.alpha) + '_shift_targ' + str(shift_targ) +'_date-' + cur_date + '_time-' + cur_time + '_iter-' + str(numiter) + '_i-' + str(i) + '.png'
+        if not os.path.exists('./figures/comparision/'):
+            os.makedirs('./figures/comparision/')
         plt.savefig(file2savefig , dpi = 100)
 
     mean_err = np.mean(errors, 1)
     std_err = np.std(errors, 1)
     plt.figure()
-    plt.plot(t_test[0,:,0],mean_err,'b')
-    plt.fill_between(t_test[0,:,0], mean_err-std_err, mean_err+std_err, alpha = 0.5)
+    plt.plot(t_test[0,:],mean_err,'b')
+    plt.fill_between(t_test[0,:], mean_err-std_err, mean_err+std_err, alpha = 0.5)
     # plt.plot(t_test[0,:,0],errors,'b')
     plt.xlabel('t')
     plt.ylabel('relative error')
