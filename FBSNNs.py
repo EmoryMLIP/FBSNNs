@@ -138,7 +138,6 @@ class FBSNN(ABC): # Forward-Backward Stochastic Neural Network
         dt = T/N
         
         Dt[:,1:,:] = dt
-        np.random.seed(0)
         DW[:,1:,:] = np.sqrt(dt)*np.random.normal(size=(M,N,D))
         
         t = np.cumsum(Dt,axis=1) # M x (N+1) x 1
