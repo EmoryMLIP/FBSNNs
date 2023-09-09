@@ -2,6 +2,8 @@
 This is a fork of the original repository at https://github.com/maziarraissi/FBSNNs, modified according to approaches considered in the paper:
 - [A Neural Network Approach for Stochastic Optimal Control](https://arxiv.org/pdf/2209.13104.pdf)
 
+We ran our tests under Python 3.6.8, required packages are listed in [install.txt](https://github.com/EmoryMLIP/FBSNNs/blob/master/install.txt).
+
 #### Major diferences from the original repository at https://github.com/maziarraissi/FBSNNs ####
 - [HamiltonJacobiBellman100D.py](https://github.com/EmoryMLIP/FBSNNs/blob/master/HamiltonJacobiBellman100D.py)
   - Updated definition of functions [phi_tf()](https://github.com/EmoryMLIP/FBSNNs/blob/19f69971115009e23bd507ca65d23360813399f3/HamiltonJacobiBellman100D.py#L32) and [mu_tf()](https://github.com/EmoryMLIP/FBSNNs/blob/19f69971115009e23bd507ca65d23360813399f3/HamiltonJacobiBellman100D.py#L41) to include drift term in the dynamics.
